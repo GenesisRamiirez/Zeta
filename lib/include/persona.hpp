@@ -7,12 +7,12 @@ struct Persona {
     std::string nombre;
     std::string apellido;
     int edad;
-    double ritmoCaminata; // km/h
+    double ritmoCaminata; 
     bool esAtleta;
     bool tieneExperiencia;
     bool esSedentario;
-    double peso; // kg
-    double altura; // m
+    double peso; 
+    double altura; 
     
 };
 
