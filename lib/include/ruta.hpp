@@ -7,9 +7,9 @@
 struct Ruta 
 {
     std::string nombre;
-    double distancia; // km
-    double gananciaAltitud; // m
-    std::vector<std::string> condiciones; // ej., lluvia, sol, viento
+    double distancia; 
+    double gananciaAltitud;
+    std::vector<std::string> condiciones; 
 };
 
 #endif  // RUTA_H
