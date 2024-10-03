@@ -8,22 +8,22 @@
 #include <limits>
 #include <cmath>
 
-int Simulador::getRutasSize() 
+int Simulador::get_rutas_size() 
 {
     return rutas_.size();
 }
 
-std::string Simulador::getRutaNombre(int index) 
+std::string Simulador::get_ruta_nombre(int index) 
 {
     return rutas_[index].nombre;
 }
 
-std::string Simulador::getPersonaNombre() 
+std::string Simulador::get_persona_nombre() 
 {
     return individuos_.begin()->first;
 }
 
-void Simulador::agregarPersona() 
+void Simulador::agregar_persona() 
 {
     Persona persona;
     std::cout << "Ingrese su nombre: ";
@@ -37,15 +37,15 @@ void Simulador::agregarPersona()
     std::cout << "¿Es atleta? (s/n): ";
     char atleta;
     std::cin >> atleta;
-    persona.esAtleta = (atleta == 's');
+    persona.es_atleta = (atleta == 's');
     std::cout << "¿Tiene experiencia? (s/n): ";
     char experiencia;
     std::cin >> experiencia;
-    persona.tieneExperiencia = (experiencia == 's');
+    persona.tiene_experiencia = (experiencia == 's');
     std::cout << "¿Es sedentario? (s/n): ";
     char sedentario;
     std::cin >> sedentario;
-    persona.esSedentario = (sedentario == 's');
+    persona.es_sedentario = (sedentario == 's');
     std::cout << "Ingrese su peso (kg): ";
     std::cin >> persona.peso;
     std::cout << "Ingrese su altura (m): ";
@@ -55,14 +55,14 @@ void Simulador::agregarPersona()
     individuos_[persona.nombre] = persona;
 }
 
-void Simulador::agregarRutas() 
+void Simulador::agregar_rutas() 
 {
     rutas_.push_back(Ruta{"Ruta estándar o tradicional", 13.5, 2500, {"lluvia", "sol"}});
     rutas_.push_back(Ruta{"Ruta del Glaciar", 13.5, 2500, {"hielo", "viento"}});
     rutas_.push_back(Ruta{"Ruta Norte", 15.0, 2800, {"lluvia", "nieve"}});
 }
 
-void Simulador::seleccionarRuta() 
+void Simulador::seleccionar_ruta() 
 {
     std::cout << "Seleccione una ruta:" << std::endl;
     for (int i = 0; i < rutas_.size(); i++) {
@@ -71,15 +71,15 @@ void Simulador::seleccionarRuta()
     int opcion;
     std::cout << "Ingrese el número de la ruta: ";
     std::cin >> opcion;
-    rutaSeleccionada_ = rutas_[opcion - 1].nombre;
+    ruta_seleccionada_ = rutas_[opcion - 1].nombre;
 }
 
-std::string Simulador::getRutaSeleccionada() 
+std::string Simulador::get_ruta_seleccionada() 
 {
-    return rutaSeleccionada_;
+    return ruta_seleccionada_;
 }
 
-void Simulador::mostrarDatosPersona() 
+void Simulador::mostrar_datos_persona() 
 {
     std::cout << "Datos de la persona:" << std::endl;
     for (auto& persona : individuos_) 
@@ -87,25 +87,25 @@ void Simulador::mostrarDatosPersona()
         std::cout << "Nombre: " << persona.second.nombre << std::endl;
         std::cout << "Apellido: " << persona.second.apellido << std::endl;
         std::cout << "Edad: " << persona.second.edad << std::endl;
-        std::cout << "Ritmo de caminata: " << persona.second.ritmoCaminata << " km/h" << std::endl;
+        std::cout << "Ritmo de caminata: " << persona.second.ritmo_caminata << " km/h" << std::endl;
         std::cout << "Es atleta: " << (persona.second.esAtleta ? "Sí" : "No") << std::endl;
-        std::cout << "Tiene experiencia: " << (persona.second.tieneExperiencia ? "Sí" : "No") << std::endl;
-        std::cout << "Es sedentario: " << (persona.second.esSedentario ? "Sí" : "No") << std::endl;
+        std::cout << "Tiene experiencia: " << (persona.second.tiene_experiencia ? "Sí" : "No") << std::endl;
+        std::cout << "Es sedentario: " << (persona.second.es_sedentario ? "Sí" : "No") << std::endl;
         std::cout << "Peso: " << persona.second.peso << " kg" << std::endl;
         std::cout << "Altura: " << persona.second.altura << " m" << std::endl;
     }
 }
 
-void Simulador::mostrarDatosRuta() 
+void Simulador::mostrar_datos_ruta() 
 {
     std::cout << "Datos de la ruta seleccionada:" << std::endl;
     for (auto& ruta : rutas_) 
     {
-        if (ruta.nombre == rutaSeleccionada_) 
+        if (ruta.nombre == ruta_seleccionada_) 
         {
             std::cout << "Nombre: " << ruta.nombre << std::endl;
             std::cout << "Distancia: " << ruta.distancia << " km" << std::endl;
-            std::cout << "Ganancia de altitud: " << ruta.gananciaAltitud << " m" << std::endl;
+            std::cout << "Ganancia de altitud: " << ruta.ganancia_altitud << " m" << std::endl;
             std::cout << "Condiciones: ";
             for (auto& condicion : ruta.condiciones) 
             {
@@ -116,16 +116,16 @@ void Simulador::mostrarDatosRuta()
     }
 }
 
-double Simulador::estimarTiempoCumbre(std::string nombrePersona, std::string nombreRuta) 
+double Simulador::estimar_tiempo_cumbre(std::string nombre_persona, std::string nombre_ruta) 
 {
  
-    Persona persona = individuos_[nombrePersona];
+    Persona persona = individuos_[nombre_persona];
 
 
     Ruta ruta;
     for (auto& r : rutas_) 
     {
-        if (r.nombre == nombreRuta) 
+        if (r.nombre == nombre_ruta) 
         {
             ruta = r;
             break;
@@ -133,27 +133,27 @@ double Simulador::estimarTiempoCumbre(std::string nombrePersona, std::string nom
     }
 
    
-    double tiempoCumbre = 0.0;
-    if (persona.esAtleta) 
+    double tiempo_cumbre = 0.0;
+    if (persona.es_atleta) 
     {
-        tiempoCumbre = ruta.distancia / (persona.ritmoCaminata * 0.8); 
-    } else if (persona.tieneExperiencia) 
+        tiempo_cumbre = ruta.distancia / (persona.ritmo_caminata * 0.8); 
+    } else if (persona.tiene_experiencia) 
     {
-        tiempoCumbre = ruta.distancia / (persona.ritmoCaminata * 0.6); 
+        tiempo_cumbre = ruta.distancia / (persona.ritmo_caminata * 0.6); 
     } else 
     {
-        tiempoCumbre = ruta.distancia / (persona.ritmoCaminata * 0.4); 
+        tiempoCumbre = ruta.distancia / (persona.ritmo_caminata * 0.4); 
     }
 
    
-    tiempoCumbre += ruta.gananciaAltitud / 100;
+    tiempo_cumbre += ruta.ganancia_altitud / 100;
     for (auto& condicion : ruta.condiciones) 
     {
         if (condicion == "lluvia" || condicion == "nieve") 
         {
-            tiempoCumbre += 0.5; 
+            tiempo_cumbre += 0.5; 
         }
     }
 
-    return tiempoCumbre;
+    return tiempo_cumbre;
 }

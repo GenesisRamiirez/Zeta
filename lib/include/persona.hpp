@@ -8,10 +8,10 @@ struct Persona
     std::string nombre;
     std::string apellido;
     int edad;
-    double ritmoCaminata; 
-    bool esAtleta;
-    bool tieneExperiencia;
-    bool esSedentario;
+    double ritmo_caminata; 
+    bool es_atleta;
+    bool tiene_experiencia;
+    bool es_sedentario;
     double peso; 
     double altura; 
 

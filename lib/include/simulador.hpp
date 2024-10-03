@@ -10,21 +10,21 @@
 class Simulador 
 {
 public:
-    int getRutasSize();
-    std::string getRutaNombre(int index);
-    std::string getPersonaNombre();
-    void agregarPersona();
-    void agregarRutas();
-    void seleccionarRuta();
-    std::string getRutaSeleccionada();
-    void mostrarDatosPersona();
-    void mostrarDatosRuta();
-    double estimarTiempoCumbre(std::string nombrePersona, std::string nombreRuta);
+    int get_rutas_size();
+    std::string get_ruta_nombre(int index);
+    std::string get_persona_nombre();
+    void agregar_persona();
+    void agregar_rutas();
+    void seleccionar_ruta();
+    std::string get_ruta_seleccionada();
+    void mostrar_datos_persona();
+    void mostrar_datos_ruta();
+    double estimar_tiempo_cumbre(std::string nombre_persona, std::string nombre_ruta);
 
 private:
     std::unordered_map<std::string, Persona> individuos_;
     std::vector<Ruta> rutas_;
-    std::string rutaSeleccionada_;
+    std::string ruta_seleccionada_;
 };
 
 #endif  // SIMULADOR_H

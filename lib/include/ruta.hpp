@@ -8,7 +8,7 @@ struct Ruta
 {
     std::string nombre;
     double distancia; 
-    double gananciaAltitud;
+    double ganancia_altitud;
     std::vector<std::string> condiciones; 
 };
 
