@@ -7,7 +7,8 @@
 #include <vector>
 #include <string>
 
-class Simulador {
+class Simulador 
+{
 public:
     int getRutasSize();
     std::string getRutaNombre(int index);

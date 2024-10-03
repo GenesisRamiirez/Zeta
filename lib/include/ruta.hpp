@@ -4,7 +4,8 @@
 #include <string>
 #include <vector>
 
-struct Ruta {
+struct Ruta 
+{
     std::string nombre;
     double distancia; // km
     double gananciaAltitud; // m

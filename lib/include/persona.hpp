@@ -3,7 +3,8 @@
 
 #include <string>
 
-struct Persona {
+struct Persona 
+{
     std::string nombre;
     std::string apellido;
     int edad;
@@ -13,7 +14,7 @@ struct Persona {
     bool esSedentario;
     double peso; // kg
     double altura; // m
-    // Agregue más variables de condición física según sea necesario
+    
 };
 
 #endif  // PERSONA_H
