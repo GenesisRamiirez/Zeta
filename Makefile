@@ -1,7 +1,7 @@
 CXX         = g++ -std=c++17
 WARN        = -Wall -Wextra -Wcast-align -Wno-sign-compare -Wno-write-strings -Wno-parentheses -Wfloat-equal -pedantic
 
-# Dir
+# Directorios
 LIB         = ./lib
 INCLUDE     = ./include
 SRC         = ./src
@@ -9,12 +9,12 @@ BIN         = ./bin
 MAIN        = ./main
 TESTDIR     = ./tests
 
-# FILES
+# Archivos
 INCLUDES    = $(wildcard $(INCLUDE)/*.h)
-SOURCES     = $(wildcard $(SRC)/*.c)
+SOURCES     = $(wildcard $(SRC)/*.c)  # Ajustado aquí
 OBJECTS     = $(SOURCES:$(SRC)/%.c=$(LIB)/%.o)
 
-# Test
+# Pruebas
 TEST        = $(wildcard $(TESTDIR)/*.c)
 MKTEST      = $(TEST:$(TESTDIR)/%.c=$(BIN)/test_%)
 
@@ -22,28 +22,31 @@ MKTEST      = $(TEST:$(TESTDIR)/%.c=$(BIN)/test_%)
 MAIN_SRC    = $(wildcard $(MAIN)/*.c)
 MKMAIN      = $(MAIN_SRC:$(MAIN)/%.c=$(BIN)/main_%)
 
-# Flags and paths
+# Flags y rutas
 INCLUDEPATH = -I$(INCLUDE)
 FLAGS       = -g -O0 -DDEBUG $(WARN)
 LIBLINK     = $(OBJECTS)
 
 all: main test
 
-# library
+# Librería
 $(LIB)/%.o : $(SRC)/%.c
-$(CXX) $(FLAGS) $(INCLUDEPATH) -c $< -o $@
+	@$(CXX) $(FLAGS) $(INCLUDEPATH) -c $< -o $@
 
-# test
+# Pruebas
 $(BIN)/test_%: $(TESTDIR)/%.c $(OBJECTS)
-$(CXX) $(FLAGS) $(INCLUDEPATH) $< -o $@ $(LIBLINK)
+	@$(CXX) $(FLAGS) $(INCLUDEPATH) $< -o $@ $(LIBLINK)
 
-test: $(TEST) $(INCLUDES) $(SOURCES) $(MKTEST)
+test: $(MKTEST)
 
+# Programa principal
 $(BIN)/main_%: $(MAIN)/%.c $(OBJECTS)
-$(CXX) $(FLAGS) $(INCLUDEPATH) $< -o $@ $(LIBLINK)
+	@$(CXX) $(FLAGS) $(INCLUDEPATH) $< -o $@ $(LIBLINK)
 
-main: $(MAIN_SRC) $(INCLUDES) $(SOURCES) $(MKMAIN)
+main: $(MKMAIN)
 
+# Regla de limpieza
+RM          = rm -f
 .PHONY: clean
 clean:
-$(RM) $(MKTEST) $(MKMAIN) $(OBJECTS)
+	@$(RM) $(MKTEST) $(MKMAIN) $(OBJECTS)
