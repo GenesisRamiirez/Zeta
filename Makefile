@@ -3,50 +3,42 @@ WARN        = -Wall -Wextra -Wcast-align -Wno-sign-compare -Wno-write-strings -W
 
 # Directorios
 LIB         = ./lib
-INCLUDE     = ./include
-SRC         = ./src
-BIN         = ./bin
-MAIN        = ./main
-TESTDIR     = ./tests
+INCLUDES    = $(wildcard $(LIB)/include/*.h)
+SOURCES     = $(wildcard $(LIB)/src/*.c)
+OBJECTS     = $(SOURCES:$(LIB)/src/%.c=$(LIB)/obj/%.o)
 
-# Archivos
-INCLUDES    = $(wildcard $(INCLUDE)/*.h)
-SOURCES     = $(wildcard $(SRC)/*.c)  # Ajustado aquí
-OBJECTS     = $(SOURCES:$(SRC)/%.c=$(LIB)/%.o)
-
-# Pruebas
+TESTDIR     = ./test
 TEST        = $(wildcard $(TESTDIR)/*.c)
-MKTEST      = $(TEST:$(TESTDIR)/%.c=$(BIN)/test_%)
+MKTEST      = $(TEST:$(TESTDIR)/%.c=$(TESTDIR)/bin%)
 
-# Main
+MAIN        = ./main
 MAIN_SRC    = $(wildcard $(MAIN)/*.c)
-MKMAIN      = $(MAIN_SRC:$(MAIN)/%.c=$(BIN)/main_%)
+MKMAIN      = $(MAIN_SRC:$(MAIN)/%.c=$(MAIN)/bin%)
 
 # Flags y rutas
-INCLUDEPATH = -I$(INCLUDE)
+INCLUDEPATH = -I$(LIB)/include
+
 FLAGS       = -g -O0 -DDEBUG $(WARN)
 LIBLINK     = $(OBJECTS)
 
 all: main test
 
 # Librería
-$(LIB)/%.o : $(SRC)/%.c
+$(LIB)/obj/%.o : $(LIB)/src/%.c
 	@$(CXX) $(FLAGS) $(INCLUDEPATH) -c $< -o $@
 
 # Pruebas
-$(BIN)/test_%: $(TESTDIR)/%.c $(OBJECTS)
+$(TESTDIR)/bin%: $(TESTDIR)/%.c $(OBJECTS)
 	@$(CXX) $(FLAGS) $(INCLUDEPATH) $< -o $@ $(LIBLINK)
 
-test: $(MKTEST)
+test: $(TEST) $(INLCUDES) $(SOURCES) $(MKTEST)
 
 # Programa principal
-$(BIN)/main_%: $(MAIN)/%.c $(OBJECTS)
+$(MAIN)/bin%: $(MAIN)/%.c $(OBJECTS)
 	@$(CXX) $(FLAGS) $(INCLUDEPATH) $< -o $@ $(LIBLINK)
 
-main: $(MKMAIN)
+main: $(MKMAIN) $(INCLUDES) $(SOURCES) $(MKMAIN)
 
-# Regla de limpieza
-RM          = rm -f
-.PHONY: clean
+.PHONY:
 clean:
-	@$(RM) $(MKTEST) $(MKMAIN) $(OBJECTS)
+	@$(RM) $(MKTEST) $(MKMAIN) 
