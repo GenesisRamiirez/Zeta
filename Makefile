@@ -9,36 +9,43 @@ OBJECTS     = $(SOURCES:$(LIB)/src/%.c=$(LIB)/obj/%.o)
 
 TESTDIR     = ./test
 TEST        = $(wildcard $(TESTDIR)/*.c)
-MKTEST      = $(TEST:$(TESTDIR)/%.c=$(TESTDIR)/bin%)
+MKTEST      = $(TEST:$(TESTDIR)/%.c=$(TESTDIR)/bin/%)
 
 MAIN        = ./main
 MAIN_SRC    = $(wildcard $(MAIN)/*.c)
-MKMAIN      = $(MAIN_SRC:$(MAIN)/%.c=$(MAIN)/bin%)
+MKMAIN      = $(MAIN_SRC:$(MAIN)/%.c=$(MAIN)/bin/%)
 
 # Flags y rutas
 INCLUDEPATH = -I$(LIB)/include
-
 FLAGS       = -g -O0 -DDEBUG $(WARN)
 LIBLINK     = $(OBJECTS)
 
+# Regla por defecto
 all: main test
 
+# Crear el directorio de objetos si no existe
+$(LIB)/obj:
+	mkdir -p $(LIB)/obj
+
 # Librería
-$(LIB)/obj/%.o : $(LIB)/src/%.c
+$(LIB)/obj/%.o : $(LIB)/src/%.c | $(LIB)/obj
 	@$(CXX) $(FLAGS) $(INCLUDEPATH) -c $< -o $@
 
 # Pruebas
-$(TESTDIR)/bin%: $(TESTDIR)/%.c $(OBJECTS)
+$(TESTDIR)/bin/%: $(TESTDIR)/%.c $(OBJECTS)
 	@$(CXX) $(FLAGS) $(INCLUDEPATH) $< -o $@ $(LIBLINK)
 
-test: $(TEST) $(INLCUDES) $(SOURCES) $(MKTEST)
+test: $(MKTEST)
 
 # Programa principal
-$(MAIN)/bin%: $(MAIN)/%.c $(OBJECTS)
+$(MAIN)/bin/%: $(MAIN)/%.c $(OBJECTS)
 	@$(CXX) $(FLAGS) $(INCLUDEPATH) $< -o $@ $(LIBLINK)
 
-main: $(MKMAIN) $(INCLUDES) $(SOURCES) $(MKMAIN)
+main: $(MKMAIN)
 
-.PHONY:
+# Regla de limpieza
+RM = rm -f
+.PHONY: clean
 clean:
-	@$(RM) $(MKTEST) $(MKMAIN) 
+	@$(RM) $(TESTDIR)/bin/* $(MAIN)/bin/* $(LIB)/obj/*
+

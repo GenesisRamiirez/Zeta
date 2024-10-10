@@ -1,65 +1,139 @@
-#include "simulador.h"
 #include <iostream>
-#include <limits>
-double estimate_time(double fitness_level, double age, double weight, double distance, double elevation_gain) 
-{
-  
-  double time = 0.0;
-  if (fitness_level > 0.5) {
-    time = distance / (fitness_level * 0.1);
-  } else {
-    time = distance / (age * 0.05);
-  }
-  time += elevation_gain * 0.01;
-  return time;
-}
+#include <vector>
+#include "Individuo.hpp"
+#include "NodoRuta.hpp"
+#include "Ruta.hpp"
+#include "Funciones.hpp"
+#include "HashTable.hpp"
 
 int main() 
+
 {
-    Simulador simulador;
+    HashTable tablaHash; 
 
-    std::cout << "Bienvenido al simulador de ascenso al Pico Bolivar!" << std::endl;
-    std::cout << "Por favor, ingrese sus datos:" << std::endl;
+   
+    Ruta rutaTeleferico;
+    NodoRuta* telefericoCumbre = new NodoRuta("Pico Bolívar desde Teleférico", 8.0, 3338);
+    rutaTeleferico.agregarRuta(telefericoCumbre);
 
-    simulador.agregar_persona();
+    Ruta rutaParqueNacional;
+    NodoRuta* parqueCumbre = new NodoRuta("Pico Bolívar desde Parque Nacional", 12.0, 2578);
+    rutaParqueNacional.agregarRuta(parqueCumbre);
 
-    simulador.agregar_rutas();
+    Ruta rutaLagunaLosLosenes;
+    NodoRuta* lagunaCumbre = new NodoRuta("Pico Bolívar desde Laguna de Los Losenes", 10.0, 1578);
+    rutaLagunaLosLosenes.agregarRuta(lagunaCumbre);
 
-    std::cout << "Rutas disponibles:" << std::endl;
-    for (int i = 0; i < simulador.get_rutas_size(); i++) {
-        std::cout << i + 1 << ". " << simulador.get_ruta_nombre(i) << std::endl;
-    }
+    
+    char tipoExcursion;
+    std::cout << "¿Es una sola persona o un grupo de excursionistas? (p/g): ";
+    std::cin >> tipoExcursion;
 
-    simulador.seleccionar_ruta();
+    if (tipoExcursion == 'p') 
+    {
+        // Caso de una sola persona
+        Individuo individuo = solicitarDatosIndividuo();
+        tablaHash.agregarIndividuo(individuo); 
 
-    std::cout << "Ruta seleccionada: " << simulador.get_ruta_seleccionada() << std::endl;
+        std::cout << "Seleccione la ruta:\n";
+        std::cout << "1. Teleférico (Distancia: 8.0 km, Desnivel: 3338 m)\n";
+        std::cout << "2. Parque Nacional (Distancia: 12.0 km, Desnivel: 2578 m)\n";
+        std::cout << "3. Laguna de Los Losenes (Distancia: 10.0 km, Desnivel: 1578 m)\n";
+        int rutaSeleccionada;
+        std::cin >> rutaSeleccionada;
 
-    simulador.mostrar_datos_persona();
-    simulador.mostrar_datos_ruta();
-
-    // Recommend the most suitable route
-    std::string nombre_persona = simulador.get_persona_nombre();
-    double min_tiempo_cumbre = std::numeric_limits<double>::max();
-    std::string ruta_recomendada;
-    for (int i = 0; i < simulador.get_rutas_size(); i++) {
-        std::string ruta_nombre = simulador.get_ruta_nombre(i);
-        double tiempo_cumbre = simulador.estimar_tiempo_cumbre(nombre_persona, ruta_nombre);
-        if (tiempo_cumbre < min_tiempo_cumbre) {
-            min_tiempo_cumbre = tiempo_cumbre;
-            ruta_recomendada = ruta_nombre;
+        double tiempoEstimado;
+        switch (rutaSeleccionada) 
+        {
+            case 1:
+                tiempoEstimado = calcularTiempoEstimado(individuo, rutaTeleferico.raiz);
+                break;
+            case 2:
+                tiempoEstimado = calcularTiempoEstimado(individuo, rutaParqueNacional.raiz);
+                break;
+            case 3:
+                tiempoEstimado = calcularTiempoEstimado(individuo, rutaLagunaLosLosenes.raiz);
+                break;
+            default:
+                std::cout << "Opción no válida." << std::endl;
+                return 1;
         }
+        std::cout << "Tiempo estimado para " << individuo.nombre << ": " << tiempoEstimado << " horas" << std::endl;
+    } else if (tipoExcursion == 'g') 
+    {
+        // Caso de un grupo de excursionistas
+        int numPersonas;
+        std::cout << "Ingrese el número de personas en el grupo: ";
+        std::cin >> numPersonas;
+
+        std::vector<Individuo> grupo;
+        for (int i = 0; i < numPersonas; ++i) 
+        {
+            std::cout << "Datos para la persona " << i + 1 << ":" << std::endl;
+            Individuo individuo = solicitarDatosIndividuo();
+            grupo.push_back(individuo);
+            tablaHash.agregarIndividuo(individuo); 
+        }
+
+        std::cout << "Seleccione la ruta:\n";
+        std::cout << "1. Teleférico (Distancia: 8.0 km, Desnivel: 3338 m)\n";
+        std::cout << "2. Parque Nacional (Distancia: 12.0 km, Desnivel: 2578 m)\n";
+        std::cout << "3. Laguna de Los Losenes (Distancia: 10.0 km, Desnivel: 1578 m)\n";
+        int rutaSeleccionada;
+        std::cin >> rutaSeleccionada;
+
+        double tiempoMaximo = 0.0;
+        for (auto& individuo : grupo) 
+        {
+            double tiempoEstimado;
+            switch (rutaSeleccionada) 
+            {
+                case 1:
+                    tiempoEstimado = calcularTiempoEstimado(individuo, rutaTeleferico.raiz);
+                    break;
+                case 2:
+                    tiempoEstimado = calcularTiempoEstimado(individuo, rutaParqueNacional.raiz);
+                    break;
+                case 3:
+                    tiempoEstimado = calcularTiempoEstimado(individuo, rutaLagunaLosLosenes.raiz);
+                    break;
+                default:
+                    std::cout << "Opción no válida." << std::endl;
+                    return 1;
+            }
+            std::cout << "Tiempo estimado para " << individuo.nombre << ": " << tiempoEstimado << " horas" << std::endl;
+            if (tiempoEstimado > tiempoMaximo) 
+            {
+                tiempoMaximo = tiempoEstimado;
+            }
+        }
+
+        std::cout << "Tiempo estimado para el grupo: " << tiempoMaximo << " horas" << std::endl;
+    } else 
+    {
+        std::cout << "Opción no válida." << std::endl;
     }
+std::string nombreBuscar;
+std::cout << "Ingrese el nombre para buscar en la tabla hash: ";
+std::cin.ignore();
+std::getline(std::cin, nombreBuscar);
 
-    double fitness_level = 0.7; // Example value
-    double age = 30.0; // Example value
-    double weight = 70.0; // Example value
-    double distance = 10.0; // Example value
-    double elevation_gain = 500.0; // Example value
+//Individuo* encontrado = tablaHash.obtenerIndividuo(nombreBuscar);
+std::shared_ptr<Individuo> encontrado = tablaHash.obtenerIndividuo(nombreBuscar);
 
-    double estimated_time = estimate_time(fitness_level, age, weight, distance, elevation_gain);
-    std::cout << "Estimated time to reach the recommended route: " << estimated_time << " hours" << std::endl;
+if (encontrado != nullptr) 
+{
+    std::cout << "Individuo encontrado: " << std::endl;
+    encontrado->imprimirDatos();
+} else 
+{
+    std::cout << "Individuo no encontrado." << std::endl;
+}
 
-    std::cout << "Ruta recomendada: " << ruta_recomendada << " (Tiempo estimado: " << min_tiempo_cumbre << " horas)" << std::endl;
+  // Limpiar memoria
+    //delete telefericoCumbre;
+    //delete parqueCumbre;
+    //delete lagunaCumbre;
 
     return 0;
 }
