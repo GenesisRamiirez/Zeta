@@ -21,3 +21,5 @@ std::shared_ptr<Individuo> HashTable::obtenerIndividuo(const std::string& nombre
         return it->second.get(); 
     }
     return nullptr;
+}
+*/

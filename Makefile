@@ -1,49 +1,42 @@
 CXX         = g++ -std=c++17
 WARN        = -Wall -Wextra -Wcast-align -Wno-sign-compare -Wno-write-strings -Wno-parentheses -Wfloat-equal -pedantic
 
-# Directorios
+#lib
 LIB         = ./lib
-INCLUDES    = $(wildcard $(LIB)/include/*.h)
-SOURCES     = $(wildcard $(LIB)/src/*.c)
-OBJECTS     = $(SOURCES:$(LIB)/src/%.c=$(LIB)/obj/%.o)
+INCLUDES    = $(wildcard $(LIB)/include/*.hpp)
+SOURCES     = $(wildcard $(LIB)/src/*.cpp)
+OBJECTS     = $(SOURCES:$(LIB)/src/%.cpp=$(LIB)/obj/%.o)
 
+#test
 TESTDIR     = ./test
-TEST        = $(wildcard $(TESTDIR)/*.c)
-MKTEST      = $(TEST:$(TESTDIR)/%.c=$(TESTDIR)/bin/%)
+TEST        = $(wildcard $(TESTDIR)/*.cpp)
+MKTEST      = $(TEST:$(TESTDIR)/%.cpp=$(TESTDIR)/bin/%)
 
+#main
 MAIN        = ./main
-MAIN_SRC    = $(wildcard $(MAIN)/*.c)
-MKMAIN      = $(MAIN_SRC:$(MAIN)/%.c=$(MAIN)/bin/%)
+MAIN_SRC    = $(wildcard $(MAIN)/*.cpp)
+MKMAIN      = $(MAIN_SRC:$(MAIN)/%.cpp=$(MAIN)/bin/%)
 
-# Flags y rutas
 INCLUDEPATH = -I$(LIB)/include
 FLAGS       = -g -O0 -DDEBUG $(WARN)
 LIBLINK     = $(OBJECTS)
 
-# Regla por defecto
+
 all: main test
 
-# Crear el directorio de objetos si no existe
-$(LIB)/obj:
-	mkdir -p $(LIB)/obj
-
-# Librería
-$(LIB)/obj/%.o : $(LIB)/src/%.c | $(LIB)/obj
+$(LIB)/obj/%.o : $(LIB)/src/%.cpp | $(LIB)/obj
 	@$(CXX) $(FLAGS) $(INCLUDEPATH) -c $< -o $@
 
-# Pruebas
-$(TESTDIR)/bin/%: $(TESTDIR)/%.c $(OBJECTS)
+$(TESTDIR)/bin/%: $(TESTDIR)/%.cpp $(OBJECTS)
 	@$(CXX) $(FLAGS) $(INCLUDEPATH) $< -o $@ $(LIBLINK)
 
 test: $(MKTEST)
 
-# Programa principal
-$(MAIN)/bin/%: $(MAIN)/%.c $(OBJECTS)
+$(MAIN)/bin/%: $(MAIN)/%.cpp $(OBJECTS)
 	@$(CXX) $(FLAGS) $(INCLUDEPATH) $< -o $@ $(LIBLINK)
 
 main: $(MKMAIN)
 
-# Regla de limpieza
 RM = rm -f
 .PHONY: clean
 clean:
